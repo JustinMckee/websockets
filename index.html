@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Websockets</title>
+</head>
+<body>
+    <h1>Websockets Basics</h1>
+    <ul>
+        <li>allows two-way, event-driven communication between browser and server.</li>
+        <li>great for real-time application.</li>
+    </ul>
+
+    <p><i>Please see README.md to get the websocket examples working.</i></p>
+
+    <ul>
+        <li>Look at your browser's dev tools once you have your WS server running.</li>
+        <li>Open network connections and look for WS or Websocket.</li>
+        <li>Look at the "Messages" tab to see the browser sending a message and the server returning a message.</li>
+        <li>You can also see the server's messageEvent object in the console.</li>
+    </ul>
+    
+
+    <form id="myForm">
+        <h2>Send your message to the server.</h2>
+        <label>
+            Message
+            <input id="myMessage" type="text"/>
+        </label>
+        <button type="submit">Send</button>
+    </form>
+
+    <h2>See your message transformed to all caps and sent back.</h2>
+    <div id="wsResponse"></div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8082");
+        ws.addEventListener("open", () => {
+            console.log("Client connected to websocket!");
+        });
+
+        window.onload = () => {
+            const form = document.getElementById("myForm");
+            form.addEventListener("submit", event => {
+                event.preventDefault();
+                ws.send(Array.from(event.target).filter((field) => {
+                    return field.id === "myMessage";
+                })[0].value);
+            });
+        };
+
+        ws.addEventListener("message", event => {
+            console.log('Server Response',event);
+            document.getElementById("wsResponse").innerHTML = "<p>"+event.data+"</p>";
+        });
+
+    </script>
+</body>
+</html>
